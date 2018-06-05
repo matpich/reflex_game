@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1528230336 source:c:\users\e6430\documents\cpp\reflex game\main.cpp
+	<iostream>
+	<cstdlib>
+	<time.h>
+	<conio.h>
+
