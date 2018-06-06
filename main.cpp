@@ -2,9 +2,22 @@
 #include <cstdlib>
 #include <time.h>
 #include <conio.h>
+#include <cctype>
 
 using namespace std;
-char trans(int val)
+
+void display_points(int &points)
+{
+    cout<<"Points: "<<points<<endl<<endl;
+}
+
+void add_points(int &points)
+{
+    points +=10;
+}
+
+//translates ints to characters required by animate func
+char trans_rand_ints_to_chars(int val)
 {
     switch(val)
     {
@@ -37,52 +50,56 @@ char trans(int val)
         break;
     }
 }
-void ra(char *arr, int ti)
+
+//draws 3 numbers
+void randomize(char *arr)
 {
-    int loso;
-    for(int i=0; i<ti; i++)
+    int drawn_num;
+    for(int i=0; i<3; i++)
     {
-        loso = rand()%9+1;
-        arr[i]= trans(loso);
+        drawn_num = rand()%9+1;
+        arr[i]= trans_rand_ints_to_chars(drawn_num);
     }
 }
-void anim(char val)
+
+//display "board"
+void animate(char val)
 {
-    _sleep(1000);
-    system("CLS");
     switch(val)
     {
     case 'q':
-        cout<<" O||\n |||\n ||| ";
+        cout<<" O||\n |||\n ||| "<<endl<<endl;
         break;
     case 'w':
-        cout<<" |O|\n |||\n ||| ";
+        cout<<" |O|\n |||\n ||| "<<endl<<endl;
         break;
     case 'e':
-        cout<<" ||O\n |||\n ||| ";
+        cout<<" ||O\n |||\n ||| "<<endl<<endl;
         break;
     case 'a':
-        cout<<" |||\n O||\n ||| ";
+        cout<<" |||\n O||\n ||| "<<endl<<endl;
         break;
     case 's':
-        cout<<" |||\n |O|\n ||| ";
+        cout<<" |||\n |O|\n ||| "<<endl<<endl;
         break;
     case 'd':
-        cout<<" |||\n ||O\n ||| ";
+        cout<<" |||\n ||O\n ||| "<<endl<<endl;
         break;
     case 'z':
-        cout<<" |||\n |||\n O|| ";
+        cout<<" |||\n |||\n O|| "<<endl<<endl;
         break;
     case 'x':
-        cout<<" |||\n |||\n |O| ";
+        cout<<" |||\n |||\n |O| "<<endl<<endl;
         break;
     case 'c':
-        cout<<" |||\n |||\n ||O ";
+        cout<<" |||\n |||\n ||O "<<endl<<endl;
         break;
     default:
-        cout<<" XXX\nXXX\nXXX ";
+        cout<<" XXX\n XXX\n XXX "<<endl<<endl;
     }
 }
+
+//display progress bar
 void prog_bar(int ti)
 {
     switch(ti)
@@ -98,36 +115,107 @@ void prog_bar(int ti)
         break;
     }
 }
-void task(char *arr, int ti)
-{
-    for(int i=0; i<ti; i++)
-    {
 
+//pause app for a while and clear console window
+void wait_and_clear(int milisec)
+{
+    _sleep(milisec);
+    system("CLS");
+}
+
+//preparing task for user
+void task(char *arr, int &points)
+{
+    randomize(arr);
+    wait_and_clear(1000);
+    display_points(points);
+    for(int i=0; i<3; i++)
+    {
+        wait_and_clear(1000);
+        display_points(points);
         prog_bar(i);
-        anim(arr[i]);
+        animate(arr[i]);
+
+    }
+    wait_and_clear(1000);
+}
+
+//it's user round, if user will make a mistake function will assign false to the "luck" variable
+void round(char *arr, int &points, bool &luck)
+{
+    char user_choice;
+    cout<<"Your turn:";
+    for(int i=0; i<3; i++)
+    {
+        //display_points(points);
+        user_choice = tolower(getch());
+        if(user_choice!=arr[i])
+        {
+            luck = false;
+            wait_and_clear(0);
+            display_points(points);
+            prog_bar(i);
+            animate('l'); //passed wrong value
+            break;
+        }
+        prog_bar(i);
+        wait_and_clear(0);
+        add_points(points);
+        display_points(points);
+        prog_bar(i);
+        animate(user_choice);
     }
 }
 
+void instruction()
+{
+    char buttons[10] = {'q','w','e','a','s','d','z','x','c','l'};
+    cout<<"Player must repeat computer moves. Each correct move will add 10 points. \nAvailable moves and buttons assigned to them are presented below:"<<endl<<endl;
+    for(int i =0; i<10; i++)
+    {
+        if (i!=9)
+        {
+            cout<<"  "<<(char)toupper(buttons[i])<<endl;
+            animate(buttons[i]);
+        }
+        else
+        {
+            cout<<"If you press wrong button game ends."<<endl;
+            animate(buttons[i]);
+        }
+    }
+cout<<"Press any button if you want back to the main menu."<<endl<<endl;
+    getch();
+}
+void game_over(int &points)
+{
+    wait_and_clear(1000);
+    cout<<"You loose!"<<endl<<endl;
+    cout<<"Your points: "<<points<<endl<<endl;
+    cout<<"Press any button.";
+    getch();
+}
+
+void game()
+{
+    bool luck=true;
+    char tab[3];
+    int points = 0;
+    do
+    {
+        task(tab,points);
+        round(tab,points,luck);
+    }
+    while(luck);
+
+    game_over(points);
+
+}
 int main()
 {
-    int a;
-    char tab[3];
-    char b;
-
     srand(time(NULL));
-    ra(tab,3);
-    task(tab,3);
-    /*
-        for(int j=0; j<2; j++)
-        {
-            cout<<"Points: 0"<<endl;
-            for(int i=0; i<30; i++)
-            {
-                anim(getch());
-                _sleep(150);
+    instruction();
+    game();
 
-            }
-        }
-    */
     return 0;
 }
