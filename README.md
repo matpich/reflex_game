@@ -1,0 +1,1 @@
+This game displays simple ASCII graphics sequence that player must repeat. If he fails the game ends.
