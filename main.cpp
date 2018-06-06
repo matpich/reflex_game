@@ -5,6 +5,30 @@
 #include <cctype>
 
 using namespace std;
+void display_points(int &points);
+void add_points(int &points);
+char trans_rand_ints_to_chars(int val);
+void randomize(char *arr);
+void animate(char val);
+void prog_bar(int ti);
+int main();
+void wait_and_clear(int milisec);
+void task(char *arr, int &points);
+void round(char *arr, int &points, bool &luck);
+void instruction();
+void game_over(int &points);
+void game();
+void menu();
+
+int main()
+{
+    srand(time(NULL));
+
+    while(true)
+        menu();
+
+    return 0;
+}
 
 void display_points(int &points)
 {
@@ -51,7 +75,7 @@ char trans_rand_ints_to_chars(int val)
     }
 }
 
-//draws 3 numbers
+//creating 3 random numbers
 void randomize(char *arr)
 {
     int drawn_num;
@@ -167,6 +191,7 @@ void round(char *arr, int &points, bool &luck)
     }
 }
 
+//display instructions how to play and rules
 void instruction()
 {
     char buttons[10] = {'q','w','e','a','s','d','z','x','c','l'};
@@ -184,8 +209,9 @@ void instruction()
             animate(buttons[i]);
         }
     }
-cout<<"Press any button if you want back to the main menu."<<endl<<endl;
+    cout<<"Press any button if you want back to the main menu."<<endl<<endl;
     getch();
+    wait_and_clear(0);
 }
 void game_over(int &points)
 {
@@ -194,6 +220,7 @@ void game_over(int &points)
     cout<<"Your points: "<<points<<endl<<endl;
     cout<<"Press any button.";
     getch();
+    wait_and_clear(0);
 }
 
 void game()
@@ -211,11 +238,33 @@ void game()
     game_over(points);
 
 }
-int main()
-{
-    srand(time(NULL));
-    instruction();
-    game();
 
-    return 0;
+void menu()
+{
+    int menu_choice;
+
+    cout<<"Welcome in the game!"<<endl<<endl;
+    cout<<"1. Play game"<<endl;
+    cout<<"2. Show instructions"<<endl;
+    cout<<"3. Exit"<<endl;
+    menu_choice=getch()-'0'; //getch gets char value and translate it to int char '1' is int 49 that's why I substract char '0' (int 48)
+    switch(menu_choice)
+    {
+    case 1:
+        wait_and_clear(0);
+        game();
+        break;
+    case 2:
+        wait_and_clear(0);
+        instruction();
+        break;
+    case 3:
+        wait_and_clear(0);
+        exit(0);
+        break;
+    case 4:
+        wait_and_clear(0);
+        cout<<"Unknown option.";
+        wait_and_clear(1000);
+    }
 }
